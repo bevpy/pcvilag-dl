@@ -8,12 +8,10 @@ Copyright (C) 2015 Gyulai Gergő
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
-
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
-
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
@@ -26,10 +24,13 @@ import re
 from subprocess import call
 
 #get platform
+global PF
 PF = platform.system() 
 
 #set HOME for the files...
+global WIN 
 WIN = 'Windows'
+global PICS
 
 if PF==WIN:
   HOME = "C:\\PCVilag-docs\\"
@@ -92,6 +93,8 @@ def get_piclinks(url):
 		i+=1
 
 	print "DONE"
+	global PICS
+	PICS = i
 	return res
 
 #download pictures
@@ -106,7 +109,7 @@ def get_pics(links, path, book, full):
 
   for element in links:
     print str(i).rjust(5)+".",
-    urllib.urlretrieve(element,path+element.split("/")[-1])
+    urllib.urlretrieve(element,path+str(i)+"."+element.split("/")[-1].split(".")[-1])
     print "DONE"
     i+=1
 
@@ -117,10 +120,10 @@ def convertToPDF(path,u_name, book, full):
 	print "Converting pictures to one PDF...",
 
 	if book:
-		os.system("convert "+path+"src"+("\\" if PF==WIN else "/")+"*.jpg "+path+u_name.split(("\\" if PF==WIN else "/"))[1]+".pdf")
+		os.system("convert "+path+"src"+("\\" if PF==WIN else "/")+"\%d.jpg[1-"+str(PICS)+"] "+path+u_name.split(("\\" if PF==WIN else "/"))[1]+".pdf")
 	else:
 		path = path+full[5]+("\\" if PF==WIN else "/")
-		os.system("convert "+path+full[6]+("\\" if PF==WIN else "/")+"src"+("\\" if PF==WIN else "/")+"*.jpg "+path+"\\"+u_name.split(("\\" if PF==WIN else "/"))[1]+"-"+full[6]+".pdf")
+		os.system("convert "+path+full[6]+("\\" if PF==WIN else "/")+"src"+("\\" if PF==WIN else "/")+"%d.jpg[1-"+str(PICS)+"] "+path+"\\"+u_name.split(("\\" if PF==WIN else "/"))[1]+"-"+full[6]+".pdf")
 
 	print "DONE"
 
@@ -155,4 +158,3 @@ def main():
 
 if __name__=="__main__":
   main()
-
