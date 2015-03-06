@@ -8,10 +8,12 @@ Copyright (C) 2015 Gyulai Gergő
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
+ 
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
+ 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
@@ -113,8 +115,10 @@ def get_piclinks(url):
     print "Get pictures' link...",
     s = url.split("/")
     alap = "/".join(s[:-1])+"/"
-    link = alap+"/link.php"
-    data = urllib.urlopen(link).read()
+    link = alap+"link.php"
+    open = urllib.urlopen(link)
+    data = open.read()
+    open.close()
     tmp = re.findall("kep\.php\?kepparam\=([a-zA-z0-9\-]+\.\w+)",data)
     res = []
     i=0
@@ -124,8 +128,6 @@ def get_piclinks(url):
         i+=1
 
     print "DONE"
-    global PICS
-    PICS = i
     return res
 
 
@@ -140,10 +142,21 @@ def get_pics(links, path, book, full):
         path = path+full[5]+BS+full[6]+BS+"src"+BS
 
     for element in links:
-       print str(i).rjust(5)+".",
-       urllib.urlretrieve(element,path+str(i)+"."+element.split("/")[-1].split(".")[-1])
-       print "DONE"
-       i+=1
+        print str(i).rjust(5)+".",
+        e=None
+        
+        try:
+            urllib.urlretrieve(element,path+str(i)+"."+element.split("/")[-1].split(".")[-1])
+            e=None
+        except IOError,e:
+            print "Error: This file is no longer available"
+            i-=1
+
+        if e==None:
+            print "DONE"
+        i+=1
+    global PICS
+    PICS = i-1
 
     print "ALL PICTURES DOWNLOADED"
 
@@ -153,10 +166,10 @@ def convertToPDF(path,u_name, book, full):
     print "Converting pictures to one PDF...",
 
     if book:
-        os.system("convert "+path+"src"+BS+"%d.jpg[1-"+str(PICS)+"] "+path+u_name.split(BS)[1]+".pdf")
+        os.system("convert -limit thread 1 "+path+"src"+BS+"%d.jpg[1-"+str(PICS)+"] "+path+u_name.split(BS)[1]+".pdf")
     else:
         path = path+full[5]+BS
-        os.system("convert "+path+full[6]+BS+"src"+BS+"%d.jpg[1-"+str(PICS)+"] "+path+u_name.split(BS)[1]+"-"+full[6]+".pdf")
+        os.system("convert -limit thread 1 "+path+full[6]+BS+"src"+BS+"%d.jpg[1-"+str(PICS)+"] "+path+u_name.split(BS)[1]+"-"+full[6]+".pdf")
 
     print "DONE"
 
