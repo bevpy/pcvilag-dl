@@ -23,7 +23,7 @@ It is a downloader for the [PCVilág (Hungarian)](http://pcvilag.muskatli.hu/), 
 ##Step-by-step
 1. Download where you want...
 2. Run with `python <absolute or relative file path>/pcvilag-dl.py` or give run attribute (`chmod u+x <path>/pcvilag-dl.py`[Unix system]) for it and you can type this: `<absolute or relative file path>/pcvilag-dl.py`.
-3. Firstly it will check it's own directorys `C:\PCVilag-docs\books` and `C:\PCVilag-docs\mags`
+3. Firstly it will check its own directories `C:\PCVilag-docs\books` and `C:\PCVilag-docs\mags`
   - If not exist it will create the folder structure
 4. Enter a URL... (Valid looks like this: *http://pcvilag.muskatli.hu/irodalom/cbooks/c641/c8.html* point to a book or mag first page.
 5. It will create a folder structure in `books` or `mags`. It depends on the link.
