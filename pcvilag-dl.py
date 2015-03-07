@@ -57,7 +57,7 @@ def check_root():
             print "BOOKS: OK"
             
         if not os.path.exists(HOME+"mags"):
-            print "Creating BOOKS...",
+            print "Creating MAGS...",
             os.mkdir(HOME+"mags", 0755)
             print "DONE"
         else:
